@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CustomLibraries\Logger\Logger.csproj" />
+    <ProjectReference Include="..\..\CustomLibraries\VCore.Standard\VCore.Standard.csproj" />
+    <ProjectReference Include="..\..\CustomLibraries\VCore\VCore.WPF.csproj" />
+    <ProjectReference Include="..\..\VPlayer\VPlayer.DarkTheme\VPlayer.DarkTheme.csproj" />
+    <ProjectReference Include="..\ActivityManager.Core\ActivityManager.Core.csproj" />
+    <ProjectReference Include="..\ActivityManager.Domain\ActivityManager.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
