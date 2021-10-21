@@ -7,7 +7,7 @@
         xmlns:regions="http://prismlibrary.com/"
         xmlns:regions1="clr-namespace:ActivityManager.Core;assembly=ActivityManager.Core"
         Title="MainWindow"
-        Width="800"
+        Width="850"
         Height="450"
         MinWidth="560"
         MinHeight="400"

@@ -3,12 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:controls="clr-namespace:VCore.Controls;assembly=VCore.WPF"
+             xmlns:converters="clr-namespace:VCore.WPF.Converters;assembly=VCore.WPF"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domain="clr-namespace:ActivityManager.Domain;assembly=ActivityManager.Domain"
+             xmlns:library="clr-namespace:VPlayer.Library;assembly=VCore.WPF"
              xmlns:local="clr-namespace:ActivityManager.Views"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:library="clr-namespace:VPlayer.Library;assembly=VCore.WPF"
              d:DesignHeight="450"
              d:DesignWidth="800"
+             Padding="2"
              mc:Ignorable="d">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -69,11 +72,17 @@
       <RowDefinition />
     </Grid.RowDefinitions>
 
-    <StackPanel Margin="0,0,0,5">
+    <Grid Margin="0,5,0,15">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+
       <controls:PathButton Width="155"
                            Margin="5,0"
                            Padding="10"
                            HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
                            Background="#25757575"
                            BorderBrush="#25ffffff"
                            BorderThickness="1"
@@ -82,18 +91,70 @@
                            ForegroundDefaultColor="White"
                            IconHoverColor="{StaticResource DefaultRedColor}"
                            Style="{StaticResource plus}" />
-    </StackPanel>
+
+      <Border  Grid.Column="1" Margin="10,0,0,0" Background="#151515" BorderBrush="#353535" BorderThickness="1">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+          </Grid.RowDefinitions>
+
+          <Border Background="#252525" Padding="5,5" BorderBrush="#353535" BorderThickness="0 0 0 1">
+            <TextBlock HorizontalAlignment="Center" Text="Filter" />
+          </Border>
+       
+
+          <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Margin="0,0,10,0"
+                         VerticalAlignment="Center"
+                         Text="Typ aktivity" />
+
+              <ComboBox VerticalAlignment="Top"
+                        DisplayMemberPath="Description"
+                        FontSize="15"
+                        ItemsSource="{Binding FilterByType, Converter={library:EnumToCollectionConverter}, Mode=OneTime}"
+                        SelectedValue="{Binding FilterByType}"
+                        SelectedValuePath="Value" />
+            </StackPanel>
+
+          </StackPanel>
+        </Grid>
+      </Border>
+     
+    </Grid>
 
     <Border Grid.Row="1">
       <Grid>
-        <ListView Foreground="White" ItemsSource="{Binding Activities}">
+        <ListView Foreground="White" ItemsSource="{Binding Activities.View}">
           <ListView.View>
             <GridView>
               <GridView.Columns>
+                <GridViewColumn Width="60" Header="Akcie">
+                  <GridViewColumn.CellTemplate>
+                    <DataTemplate>
+                      <StackPanel Orientation="Horizontal">
+                        <controls:PathButton Command="{Binding DataContext.DeleteActivity, RelativeSource={RelativeSource AncestorType=ListView, Mode=FindAncestor}}"
+                                             CommandParameter="{Binding}"
+                                             IconHoverColor="{StaticResource DefaultRedColor}"
+                                             Style="{StaticResource xmark}"
+                                             ToolTip="Vymazať" />
+
+                        <controls:PathButton Margin="0,0,10,0"
+                                             Command="{Binding DataContext.EditActivity, RelativeSource={RelativeSource AncestorType=ListView, Mode=FindAncestor}}"
+                                             CommandParameter="{Binding}"
+                                             Style="{StaticResource pencil-glyph}"
+                                             ToolTip="Upraviť" />
+
+                      </StackPanel>
+                    </DataTemplate>
+                  </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+
                 <GridViewColumn Width="110" Header="Poradové číslo">
                   <GridViewColumn.CellTemplate>
                     <DataTemplate>
-                      <TextBlock Text="{Binding Model.Order}" />
+                      <TextBlock Text="{Binding Model.Id}" />
                     </DataTemplate>
                   </GridViewColumn.CellTemplate>
                 </GridViewColumn>
@@ -101,14 +162,44 @@
                 <GridViewColumn Width="120" Header="Dátum vytvorenia">
                   <GridViewColumn.CellTemplate>
                     <DataTemplate>
-                      <TextBlock Text="{Binding Model.Created}" />
+                      <TextBlock Text="{Binding Model.Created, StringFormat={}{0:dd.MM.yyyy}}" />
                     </DataTemplate>
                   </GridViewColumn.CellTemplate>
                 </GridViewColumn>
                 <GridViewColumn Width="120" Header="Typ aktivity">
                   <GridViewColumn.CellTemplate>
                     <DataTemplate>
-                      <TextBlock Text="{Binding Model.Type, Converter={library:EnumDecriptionConverter}}" />
+                      <TextBlock Text="{Binding Model.Type, Converter={library:EnumDecriptionConverter}}">
+                        <TextBlock.Style>
+                          <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding Model.Type}" Value="{x:Static domain:ActivityType.Run}">
+                                <Setter Property="Foreground" Value="#37aaed" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding Model.Type}" Value="{x:Static domain:ActivityType.Bicycle}">
+                                <Setter Property="Foreground" Value="#37ed43" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding Model.Type}" Value="{x:Static domain:ActivityType.Walk}">
+                                <Setter Property="Foreground" Value="#edde37" />
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </TextBlock.Style>
+                      </TextBlock>
+                    </DataTemplate>
+                  </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Width="120" Header="Dĺžka trvania">
+                  <GridViewColumn.CellTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding Duration, Converter={converters:DurationConverter}, ConverterParameter=hours}" />
+                    </DataTemplate>
+                  </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Width="120" Header="Vzdialenosť (km)">
+                  <GridViewColumn.CellTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding Model.DistanceInKm}" />
                     </DataTemplate>
                   </GridViewColumn.CellTemplate>
                 </GridViewColumn>

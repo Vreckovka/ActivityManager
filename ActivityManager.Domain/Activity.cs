@@ -5,8 +5,10 @@ namespace ActivityManager.Domain
 {
   public class Activity : DatedEntity
   {
-    public int Order { get; set; }
-
     public ActivityType Type { get; set; }
+
+    public double DistanceInKm { get; set; }
+
+    public long DurationTicks { get; set; }
   }
 }
