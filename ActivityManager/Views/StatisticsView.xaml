@@ -16,7 +16,10 @@
     </Style>
   </UserControl.Resources>
 
-  <ScrollViewer>
+  <ScrollViewer Margin="5"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto"
+                WindowChrome.IsHitTestVisibleInChrome="True">
     <Grid>
       <ItemsControl Background="#151515" ItemsSource="{Binding Statistics.View}">
         <ItemsControl.ItemTemplate>
@@ -30,7 +33,7 @@
               <Border Padding="5"
                       Background="#181818"
                       BorderBrush="#454545"
-                      BorderThickness="2">
+                      BorderThickness="1">
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="16"
                            FontWeight="SemiBold">
