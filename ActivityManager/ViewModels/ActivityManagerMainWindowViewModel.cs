@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ActivityManager.ViewModels.Activities;
+using ActivityManager.ViewModels.Statistics;
 using VCore.Standard.Factories.ViewModels;
-using VCore.ViewModels;
-using VCore.ViewModels.Navigation;
+using VCore.WPF.ViewModels;
 using VCore.WPF.ViewModels.Navigation;
 
 namespace ActivityManager.ViewModels

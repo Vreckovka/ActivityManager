@@ -52,7 +52,7 @@
         <ComboBox VerticalAlignment="Top"
                   DisplayMemberPath="Description"
                   FontSize="15"
-                  ItemsSource="{Binding Type, Converter={library:EnumToCollectionConverter}, Mode=OneTime}"
+                  ItemsSource="{Binding Type, Converter={converters:EnumToCollectionConverter}, Mode=OneTime}"
                   SelectedValue="{Binding Type}"
                   SelectedValuePath="Value" />
       </StackPanel>

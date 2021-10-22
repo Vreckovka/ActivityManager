@@ -1,51 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using ActivityManager.Core;
 using ActivityManager.Domain;
+using ActivityManager.Providers;
 using ActivityManager.ViewModels.Modals;
 using ActivityManager.Views;
 using ActivityManager.Views.Modals;
 using VCore;
-using VCore.ItemsCollections;
-using VCore.Modularity.RegionProviders;
 using VCore.Standard.Factories.ViewModels;
-using VCore.Standard.Helpers;
-using VCore.ViewModels;
+using VCore.WPF.Interfaces.Managers;
 using VCore.WPF.ItemsCollections;
 using VCore.WPF.Managers;
-using VPlayer.WindowsPlayer.Behaviors;
+using VCore.WPF.Misc;
+using VCore.WPF.Modularity.RegionProviders;
+using VCore.WPF.ViewModels;
 
-namespace ActivityManager.ViewModels
+namespace ActivityManager.ViewModels.Activities
 {
-  public enum FilterActivityType
-  {
-    [Description("Žiadny")]
-    None,
-    [Description("Beh")]
-    Run,
-    [Description("Bicykel")]
-    Bicycle,
-    [Description("Chôdza")]
-    Walk
-  }
-
   public class ActivitiesViewModel : RegionViewModel<ActivitiesView>
   {
     private readonly IWindowManager windowManager;
     private readonly IViewModelsFactory viewModelsFactory;
-    private string path = "Data/Activities.txt";
+    private readonly IActivitiesProvider activitiesProvider;
 
-    public ActivitiesViewModel(IRegionProvider regionProvider, IWindowManager windowManager, IViewModelsFactory viewModelsFactory) : base(regionProvider)
+
+    public ActivitiesViewModel(
+      IRegionProvider regionProvider,
+      IWindowManager windowManager,
+      IViewModelsFactory viewModelsFactory,
+      IActivitiesProvider activitiesProvider) : base(regionProvider)
     {
       this.windowManager = windowManager ?? throw new ArgumentNullException(nameof(windowManager));
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
+      this.activitiesProvider = activitiesProvider ?? throw new ArgumentNullException(nameof(activitiesProvider));
     }
 
     #region Properties
@@ -136,6 +126,7 @@ namespace ActivityManager.ViewModels
 
 
         Activities.Add(newVm);
+        activitiesProvider.AddActivityToCache(model);
 
         newVm.GetDuration();
         SaveAcitvities();
@@ -163,6 +154,8 @@ namespace ActivityManager.ViewModels
       if (result == VCore.WPF.ViewModels.Prompt.PromptResult.Ok)
       {
         Activities.Remove(activityViewModel);
+
+        activitiesProvider.AddActivityToCache(activityViewModel.Model);
 
         SaveAcitvities();
       }
@@ -224,33 +217,23 @@ namespace ActivityManager.ViewModels
 
     #region LoadActivities
 
-    private void LoadActivities()
+    private async void LoadActivities()
     {
-      if (File.Exists(path))
+      var loadedActivities = await activitiesProvider.LoadActivitiesAsync();
+
+      Application.Current.Dispatcher.Invoke(() =>
       {
-        var json = File.ReadAllText(path);
-
-        var loadedActivities = JsonSerializer.Deserialize<IEnumerable<Activity>>(json);
-
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-          Activities.AddRange(loadedActivities.Select(x => viewModelsFactory.Create<ActivityViewModel>(x)));
-        });
-      }
+        Activities.AddRange(loadedActivities.Select(x => viewModelsFactory.Create<ActivityViewModel>(x)));
+      });
     }
 
     #endregion
 
     #region SaveAcitvities
 
-    private void SaveAcitvities()
+    private async void SaveAcitvities()
     {
-      var activities = Activities.ViewModels.Select(x => x.Model);
-      var json = JsonSerializer.Serialize(activities);
-
-      path.EnsureDirectoryExists();
-
-      File.WriteAllText(path, json);
+      await activitiesProvider.SaveAcitvitiesAsync();
     }
 
     #endregion
