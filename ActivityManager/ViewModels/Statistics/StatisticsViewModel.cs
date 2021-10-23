@@ -4,11 +4,16 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using ActivityManager.Core;
 using ActivityManager.Domain;
 using ActivityManager.Providers;
+using ActivityManager.ViewModels.Activities;
+using ActivityManager.ViewModels.Modals;
 using ActivityManager.Views;
+using ActivityManager.Views.Modals;
 using VCore.WPF.ItemsCollections;
+using VCore.WPF.Misc;
 using VCore.WPF.Modularity.RegionProviders;
 using VCore.WPF.ViewModels;
 
@@ -32,6 +37,35 @@ namespace ActivityManager.ViewModels.Statistics
     {
       base.OnActivation(firstActivation);
 
+      if(firstActivation)
+      {
+        Task.Run(async () =>
+        {
+          var stats = await CalculateStatistics();
+
+          Application.Current.Dispatcher.Invoke(() =>
+          {
+            Statistics.Clear();
+            Statistics.AddRange(stats);
+          });
+        });
+      }
+    }
+
+    #region Refresh
+
+    private ActionCommand refresh;
+
+    public ICommand Refresh
+    {
+      get
+      {
+        return refresh ??= new ActionCommand(OnAddActivity);
+      }
+    }
+
+    private void OnAddActivity()
+    {
       Task.Run(async () =>
       {
         var stats = await CalculateStatistics();
@@ -42,8 +76,9 @@ namespace ActivityManager.ViewModels.Statistics
           Statistics.AddRange(stats);
         });
       });
-
     }
+
+    #endregion
 
     #region CalculateStatistics
 
@@ -65,13 +100,12 @@ namespace ActivityManager.ViewModels.Statistics
             var newVm = new ActivityStatisticsViewModel()
             {
               Range = range,
-              ActivityType = activityType
+              ActivityType = activityType,
+              Date = DateTime.Now,
+              Activities = allTypedActivities
             };
 
-            var ranged = allTypedActivities.Where(x => GetStatisticsRangePredicated(x, range)).ToList();
-
-            newVm.TotalKmValue = ranged.Sum(x => x.DistanceInKm);
-            newVm.TotalTime = TimeSpan.FromTicks(ranged.Sum(x => x.DurationTicks));
+            newVm.CalculateStats(DateTime.Now);
 
             groupStats.Add(newVm);
           }
@@ -84,25 +118,22 @@ namespace ActivityManager.ViewModels.Statistics
           };
 
 
-
           list.Add(newGroupVm);
         }
 
         var totalGroup = new ActivityStatisticsGroupViewModel();
         var totalList = new List<ActivityStatisticsViewModel>();
-        var allStats = list.SelectMany(x => x.ActivityStatistics).ToList();
 
         foreach (StatisticsRange range in Enum.GetValues(typeof(StatisticsRange)))
         {
-          var totalKm = allStats.Where(x => x.Range == range).Sum(x => x.TotalKmValue);
-          var totalTime = TimeSpan.FromTicks(allStats.Where(x => x.Range == range).Sum(x => x.TotalTime.Ticks));
-
           var newVm = new ActivityStatisticsViewModel()
           {
             Range = range,
-            TotalKmValue = totalKm,
-            TotalTime = totalTime
+            Date = DateTime.Now,
+            Activities = activities
           };
+
+          newVm.CalculateStats(DateTime.Now);
 
           totalList.Add(newVm);
         }
@@ -115,27 +146,6 @@ namespace ActivityManager.ViewModels.Statistics
 
     #endregion
 
-    #region GetStatisticsRangePredicated
-
-    private bool GetStatisticsRangePredicated(Activity activity, StatisticsRange statisticsRange)
-    {
-      switch (statisticsRange)
-      {
-        case StatisticsRange.Day:
-          return activity.Created != null && activity.Created.Value.Date == DateTime.Today;
-        case StatisticsRange.Week:
-          return activity.Created != null && activity.Created.Value.Date >= DateTime.Today.AddDays(-7);
-        case StatisticsRange.Month:
-          return activity.Created != null && activity.Created.Value.Date >= DateTime.Today.AddMonths(-1);
-        case StatisticsRange.Year:
-          return activity.Created != null && activity.Created.Value.Date >= DateTime.Today.AddYears(-1);
-        case StatisticsRange.Total:
-          return activity.Created != null;
-      }
-
-      return false;
-    }
-
-    #endregion
+ 
   }
 }
