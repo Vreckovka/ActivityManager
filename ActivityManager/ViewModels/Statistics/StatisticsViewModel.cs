@@ -37,19 +37,16 @@ namespace ActivityManager.ViewModels.Statistics
     {
       base.OnActivation(firstActivation);
 
-      if(firstActivation)
+      Task.Run(async () =>
       {
-        Task.Run(async () =>
-        {
-          var stats = await CalculateStatistics();
+        var stats = await CalculateStatistics(Statistics.ViewModels);
 
-          Application.Current.Dispatcher.Invoke(() =>
-          {
-            Statistics.Clear();
-            Statistics.AddRange(stats);
-          });
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+          Statistics.Clear();
+          Statistics.AddRange(stats);
         });
-      }
+      });
     }
 
     #region Refresh
@@ -68,7 +65,7 @@ namespace ActivityManager.ViewModels.Statistics
     {
       Task.Run(async () =>
       {
-        var stats = await CalculateStatistics();
+        var stats = await CalculateStatistics(Statistics.ViewModels);
 
         Application.Current.Dispatcher.Invoke(() =>
         {
@@ -82,18 +79,34 @@ namespace ActivityManager.ViewModels.Statistics
 
     #region CalculateStatistics
 
-    public Task<IEnumerable<ActivityStatisticsGroupViewModel>> CalculateStatistics()
+    public Task<IEnumerable<ActivityStatisticsGroupViewModel>> CalculateStatistics(IEnumerable<ActivityStatisticsGroupViewModel> old)
     {
       return Task.Run(async () =>
       {
         var list = new List<ActivityStatisticsGroupViewModel>();
+        var oldList = old?.ToList();
 
         var activities = (await activitiesProvider.LoadActivitiesAsync()).ToList();
 
         foreach (ActivityType activityType in Enum.GetValues(typeof(ActivityType)))
         {
           var allTypedActivities = activities.Where(x => x.Type == (activityType)).ToList();
-          var groupStats = new List<ActivityStatisticsViewModel>();
+
+          ActivityStatisticsGroupViewModel newGroupVm = null;
+
+          if (oldList != null)
+          {
+            newGroupVm = oldList.SingleOrDefault(x => x.ActivityType == activityType);
+          }
+
+          if (newGroupVm == null)
+          {
+            newGroupVm = new ActivityStatisticsGroupViewModel()
+            {
+              ActivityType = activityType,
+              ActivityStatistics = new List<ActivityStatisticsViewModel>()
+            };
+          }
 
           foreach (StatisticsRange range in Enum.GetValues(typeof(StatisticsRange)))
           {
@@ -104,25 +117,61 @@ namespace ActivityManager.ViewModels.Statistics
               Date = DateTime.Now,
               Activities = allTypedActivities
             };
+           
 
-            newVm.CalculateStats(DateTime.Now);
+            if (newGroupVm.ActivityStatistics.Count > 0)
+            {
+              var oldVm = newGroupVm.ActivityStatistics.SingleOrDefault(x => x.Range == range);
 
-            groupStats.Add(newVm);
+              if(oldVm != null)
+              {
+                oldVm.Activities = allTypedActivities;
+                newVm = oldVm;
+              }
+              else
+              {
+                if (range != StatisticsRange.Total)
+                {
+                  newGroupVm.ActivityStatistics.Add(newVm);
+                }
+                else
+                {
+                  newGroupVm.Total = newVm;
+                }
+              }
+            }
+            else
+            {
+              if(range != StatisticsRange.Total)
+              {
+                newGroupVm.ActivityStatistics.Add(newVm);
+              }
+              else
+              {
+                newGroupVm.Total = newVm;
+              }
+            }
+
+            await newVm.CalculateStats();
           }
-
-
-          var newGroupVm = new ActivityStatisticsGroupViewModel()
-          {
-            ActivityType = activityType,
-            ActivityStatistics = groupStats
-          };
-
 
           list.Add(newGroupVm);
         }
 
         var totalGroup = new ActivityStatisticsGroupViewModel();
-        var totalList = new List<ActivityStatisticsViewModel>();
+
+        if (oldList != null)
+        {
+          totalGroup = oldList.SingleOrDefault(x => x.ActivityType == null);
+
+          if(totalGroup == null)
+          {
+            totalGroup = new ActivityStatisticsGroupViewModel()
+            {
+              ActivityStatistics = new List<ActivityStatisticsViewModel>()
+            };
+          }  
+        }
 
         foreach (StatisticsRange range in Enum.GetValues(typeof(StatisticsRange)))
         {
@@ -132,20 +181,53 @@ namespace ActivityManager.ViewModels.Statistics
             Date = DateTime.Now,
             Activities = activities
           };
+    
 
-          newVm.CalculateStats(DateTime.Now);
+          if (totalGroup.ActivityStatistics.Count > 0)
+          {
+            var oldVm = totalGroup.ActivityStatistics.SingleOrDefault(x => x.Range == range);
 
-          totalList.Add(newVm);
+            if (oldVm != null)
+            {
+              oldVm.Activities = activities;
+              newVm = oldVm;
+            }
+            else
+            {
+              if (range != StatisticsRange.Total)
+              {
+                totalGroup.ActivityStatistics.Add(newVm);
+              }
+              else
+              {
+                totalGroup.Total = newVm;
+              }
+            }
+           
+          }
+          else
+          if (range != StatisticsRange.Total)
+          {
+            totalGroup.ActivityStatistics.Add(newVm);
+          }
+          else
+          {
+            totalGroup.Total = newVm;
+          }
+
+          await newVm.CalculateStats();
         }
 
-        totalGroup.ActivityStatistics = totalList;
+
         list.Add(totalGroup);
+
+
         return list.AsEnumerable();
       });
     }
 
     #endregion
 
- 
+
   }
 }

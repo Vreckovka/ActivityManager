@@ -8,6 +8,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:statistics="clr-namespace:ActivityManager.ViewModels.Statistics"
              xmlns:views="clr-namespace:ActivityManager.Views"
+             xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              d:DesignHeight="450"
              d:DesignWidth="800"
              Foreground="White"
@@ -28,196 +29,340 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <controls:PathButton Margin="5,0,0,0"
-                                 Padding="10"
-                                 HorizontalAlignment="Left"
-                                 BorderBrush="#454545"
-                                 BorderThickness="1"
-                                 Command="{Binding Refresh}"
-                                 Content="Prepočítaj"
-                                 ForegroundDefaultColor="#ccc"
-                                 IconDefaultColor="#858585"
-                                 IconHoverColor="{StaticResource BlueColor}"
-                                 Style="{StaticResource arrows-rotate}" />
-
             <ItemsControl Grid.Row="1"
                           Background="#151515"
                           ItemsSource="{Binding Statistics.View}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="5">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto" />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
+                        <Border Margin="0,0,0,5"
+                                BorderBrush="#75cccccc"
+                                BorderThickness="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
 
-                            <Border Padding="5"
-                                    Background="#181818"
-                                    BorderBrush="#454545"
-                                    BorderThickness="1">
-                                <TextBlock HorizontalAlignment="Center"
-                                           FontSize="16"
-                                           FontWeight="SemiBold">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Text" Value="{Binding ActivityType, Converter={converters:EnumDecriptionConverter}}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Run}">
-                                                    <Setter Property="Foreground" Value="#37aaed" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Bicycle}">
-                                                    <Setter Property="Foreground" Value="#37ed43" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Walk}">
-                                                    <Setter Property="Foreground" Value="#edde37" />
-                                                </DataTrigger>
+                                <Grid Grid.Row="1"
+                                      Height="260"
+                                      Margin="0,10,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
 
-                                                <DataTrigger Binding="{Binding ActivityType}" Value="{x:Null}">
-                                                    <Setter Property="Text" Value="Celkovo" />
-                                                    <Setter Property="Foreground" Value="#ff8282" />
-                                                </DataTrigger>
+                                    <Grid Margin="10,0,15,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
+                                        </Grid.RowDefinitions>
 
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Border>
+                                        <Grid.Resources>
+                                            <Style x:Key="TotalStats" TargetType="Border">
+                                                <Setter Property="Width" Value="150" />
+                                                <Setter Property="Padding" Value="10,5" />
+                                                <Setter Property="Background" Value="#05ffffff" />
+                                                <Setter Property="BorderBrush" Value="#25ffffff" />
+                                                <Setter Property="CornerRadius" Value="10" />
+                                                <Setter Property="BorderThickness" Value="1" />
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Border Margin="0,0,0,10"
+                                                Padding="5"
+                                                BorderBrush="#ccc"
+                                                BorderThickness="0,0,0,0">
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                <controls:PathButton FontSize="35" IsHitTestVisible="False">
+                                                    <controls:PathButton.Style>
+                                                        <Style BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}" TargetType="controls:PathButton">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Run}">
+                                                                    <Setter Property="ForegroundDefaultColor" Value="#37aaed" />
+                                                                    <Setter Property="Content" Value="" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Bicycle}">
+                                                                    <Setter Property="ForegroundDefaultColor" Value="#37ed43" />
+                                                                    <Setter Property="Content" Value="" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Walk}">
+                                                                    <Setter Property="ForegroundDefaultColor" Value="#edde37" />
+                                                                    <Setter Property="Content" Value="" />
+                                                                </DataTrigger>
 
-                            <Border Grid.Row="1"
-                                    BorderBrush="#454545"
-                                    BorderThickness="1,0,1,1">
-                                <ItemsControl ItemsSource="{Binding ActivityStatistics}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <UniformGrid Rows="1" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
+                                                                <DataTrigger Binding="{Binding ActivityType}" Value="{x:Null}">
+                                                                    <Setter Property="ForegroundDefaultColor" Value="{StaticResource DefaultRedColor}" />
+                                                                    <Setter Property="Content" Value="" />
+                                                                </DataTrigger>
 
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border BorderBrush="#454545">
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="auto" />
-                                                        <RowDefinition />
-                                                    </Grid.RowDefinitions>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </controls:PathButton.Style>
+                                                </controls:PathButton>
+                                                <TextBlock Margin="10,0,0,0"
+                                                           HorizontalAlignment="Left"
+                                                           FontSize="35"
+                                                           FontWeight="SemiBold">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="{Binding ActivityType, Converter={converters:EnumDecriptionConverter}}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ActivityType}" Value="{x:Null}">
+                                                                    <Setter Property="Text" Value="Celkovo" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
 
-                                                    <Border Padding="5"
-                                                            Background="#252525"
-                                                            BorderBrush="#454545"
-                                                            BorderThickness="0,0,0,1">
-                                                        <StackPanel>
-                                                            <StackPanel.Resources>
-                                                                <Style TargetType="{x:Type DatePickerTextBox}">
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Day}">
-                                                                            <Setter Property="Control.Template">
-                                                                                <Setter.Value>
-                                                                                    <ControlTemplate>
-                                                                                        <TextBox x:Name="PART_TextBox" Text="{Binding Path=SelectedDate, StringFormat='dd/MM/yyyy', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
-                                                                                    </ControlTemplate>
-                                                                                </Setter.Value>
-                                                                            </Setter>
-                                                                        </DataTrigger>
+                                        <Border Grid.Row="1"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource TotalStats}">
+                                            <StackPanel>
+                                                <TextBlock Margin="0,0,0,5"
+                                                           HorizontalAlignment="Center"
+                                                           FontSize="17"
+                                                           Foreground="White"
+                                                           Text="Celkovo Km" />
+                                                <TextBlock HorizontalAlignment="Center"
+                                                           FontSize="30"
+                                                           Text="{Binding Total.TotalKmValue, StringFormat={}{0} Km}" />
+                                            </StackPanel>
+                                        </Border>
 
-                                                                        <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Week}">
-                                                                            <Setter Property="Control.Template">
-                                                                                <Setter.Value>
-                                                                                    <ControlTemplate>
-                                                                                        <TextBox x:Name="PART_TextBox" Text="{Binding Path=SelectedDate, StringFormat='dd/MM/yyyy', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
-                                                                                    </ControlTemplate>
-                                                                                </Setter.Value>
-                                                                            </Setter>
-                                                                        </DataTrigger>
-
-                                                                        <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Month}">
-                                                                            <Setter Property="Control.Template">
-                                                                                <Setter.Value>
-                                                                                    <ControlTemplate>
-                                                                                        <TextBox x:Name="PART_TextBox" Text="{Binding Path=SelectedDate, StringFormat='MM/yyyy', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
-                                                                                    </ControlTemplate>
-                                                                                </Setter.Value>
-                                                                            </Setter>
-                                                                        </DataTrigger>
-
-                                                                        <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Year}">
-                                                                            <Setter Property="Control.Template">
-                                                                                <Setter.Value>
-                                                                                    <ControlTemplate>
-                                                                                        <TextBox x:Name="PART_TextBox" Text="{Binding Path=SelectedDate, StringFormat='yyyy', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
-                                                                                    </ControlTemplate>
-                                                                                </Setter.Value>
-                                                                            </Setter>
-                                                                        </DataTrigger>
+                                        <Border Grid.Row="2"
+                                                Margin="0,10,0,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource TotalStats}">
+                                            <StackPanel>
+                                                <TextBlock Margin="0,0,0,5"
+                                                           HorizontalAlignment="Center"
+                                                           FontSize="17"
+                                                           Foreground="White"
+                                                           Text="Celkový čas" />
+                                                <TextBlock HorizontalAlignment="Center"
+                                                           FontSize="30"
+                                                           Text="{Binding Total.TotalTime, Converter={converters:DurationConverter}, ConverterParameter=hours}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
 
 
-
-                                                                    </Style.Triggers>
-                                                                </Style>
-
-                                                            </StackPanel.Resources>
-                                                            <TextBlock HorizontalAlignment="Center"
-                                                                       Style="{StaticResource BaseTextBlock}"
-                                                                       Text="{Binding Range, Converter={converters:EnumDecriptionConverter}}" />
-
-
-                                                            <DatePicker Background="Transparent"
-                                                                        BorderThickness="0"
-                                                                        CalendarOpened="DatePicker_CalendarOpened"
-                                                                        IsDropDownOpen="{Binding IsOpen, Mode=TwoWay}"
-                                                                        SelectedDate="{Binding Date}">
-                                                                <DatePicker.CalendarStyle>
-                                                                    <Style TargetType="Calendar">
-                                                                        <Setter Property="DisplayMode" Value="Month" />
-
-                                                                        <Setter Property="BorderThickness" Value="0" />
-                                                                    </Style>
-                                                                </DatePicker.CalendarStyle>
-
-                                                                <DatePicker.Style>
-                                                                    <Style TargetType="DatePicker">
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Total}">
-                                                                                <Setter Property="Visibility" Value="Hidden" />
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </DatePicker.Style>
-                                                            </DatePicker>
-
-                                                        </StackPanel>
-
-                                                    </Border>
-
-                                                    <StackPanel Grid.Row="1"
-                                                                Margin="10,5,10,5"
-                                                                HorizontalAlignment="Center">
-                                                        <TextBlock HorizontalAlignment="Center"
-                                                                   Style="{StaticResource BaseTextBlock}"
-                                                                   Text="{Binding TotalTime}" />
-                                                        <TextBlock HorizontalAlignment="Center"
-                                                                   Style="{StaticResource BaseTextBlock}"
-                                                                   Text="{Binding TotalKmValue, StringFormat={}{0} km}" />
-                                                    </StackPanel>
-                                                </Grid>
-
-                                                <Border.Style>
-                                                    <Style TargetType="Border">
-                                                        <Setter Property="BorderThickness" Value="0,0,1,0" />
+                                    <wpf:CartesianChart Grid.Column="1"
+                                                        Background="Transparent"
+                                                        DataContext="{Binding Total}"
+                                                        LegendLocation="None">
+                                        <wpf:CartesianChart.Series>
+                                            <wpf:LineSeries Title="Počet Km"
+                                                            Fill="#15cccccc"
+                                                            LineSmoothness="1"
+                                                            Values="{Binding ChartValues}">
+                                                <wpf:LineSeries.Style>
+                                                    <Style TargetType="wpf:LineSeries">
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Total}">
-                                                                <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                                            <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Run}">
+                                                                <Setter Property="Stroke" Value="#37aaed" />
+                                                                <Setter Property="PointForeground" Value="#37aaed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Bicycle}">
+                                                                <Setter Property="Stroke" Value="#37ed43" />
+                                                                <Setter Property="PointForeground" Value="#37ed43" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Walk}">
+                                                                <Setter Property="Stroke" Value="#edde37" />
+                                                                <Setter Property="PointForeground" Value="#edde37" />
+                                                            </DataTrigger>
+
+                                                            <DataTrigger Binding="{Binding ActivityType}" Value="{x:Null}">
+                                                                <Setter Property="Stroke" Value="{StaticResource DefaultRedBrush}" />
+                                                                <Setter Property="PointForeground" Value="{StaticResource DefaultRedBrush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </Border.Style>
-                                            </Border>
+                                                </wpf:LineSeries.Style>
+                                            </wpf:LineSeries>
+                                        </wpf:CartesianChart.Series>
+                                        <wpf:CartesianChart.AxisY>
+                                            <wpf:Axis Title="Počet Km"
+                                                      LabelFormatter="{Binding YFormatter}"
+                                                      MinValue="0">
+                                                <wpf:Axis.Separator>
+                                                    <wpf:Separator Step="100"
+                                                                   Stroke="#25ffffff"
+                                                                   StrokeDashArray="5"
+                                                                   StrokeThickness="1" />
+                                                </wpf:Axis.Separator>
 
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </Border>
-                        </Grid>
+                                            </wpf:Axis>
+                                        </wpf:CartesianChart.AxisY>
+                                        <wpf:CartesianChart.AxisX>
+                                            <wpf:Axis Title="Čas" Labels="{Binding Labels}">
+                                                <wpf:Axis.Separator>
+                                                    <wpf:Separator Stroke="#25ffffff" StrokeThickness="1" />
+                                                </wpf:Axis.Separator>
+
+                                            </wpf:Axis>
+                                        </wpf:CartesianChart.AxisX>
+                                        <wpf:CartesianChart.DataTooltip>
+                                            <wpf:DefaultTooltip Background="#252525"
+                                                                BorderBrush="#35ffffff"
+                                                                BorderThickness="1" />
+                                        </wpf:CartesianChart.DataTooltip>
+                                    </wpf:CartesianChart>
+
+                                </Grid>
+
+                                <Border Grid.Row="2"
+                                        BorderBrush="#454545"
+                                        BorderThickness="1,1,1,1">
+                                    <ItemsControl ItemsSource="{Binding ActivityStatistics}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Rows="1" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="#454545">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="auto" />
+                                                            <RowDefinition />
+                                                        </Grid.RowDefinitions>
+
+                                                        <Border Height="60"
+                                                                Padding="5"
+                                                                Background="#252525"
+                                                                BorderBrush="#454545"
+                                                                BorderThickness="0,0,0,1">
+                                                            <StackPanel>
+                                                                <StackPanel.Resources>
+                                                                    <Style TargetType="{x:Type DatePickerTextBox}">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Day}">
+                                                                                <Setter Property="Control.Template">
+                                                                                    <Setter.Value>
+                                                                                        <ControlTemplate>
+                                                                                            <TextBox x:Name="PART_TextBox"
+                                                                                                     HorizontalContentAlignment="Center"
+                                                                                                     Text="{Binding Path=SelectedDate, StringFormat='dd/MM/yyyy', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                                                                                        </ControlTemplate>
+                                                                                    </Setter.Value>
+                                                                                </Setter>
+                                                                            </DataTrigger>
+
+                                                                            <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Week}">
+                                                                                <Setter Property="Control.Template">
+                                                                                    <Setter.Value>
+                                                                                        <ControlTemplate>
+                                                                                            <TextBox x:Name="PART_TextBox"
+                                                                                                     HorizontalContentAlignment="Center"
+                                                                                                     Text="{Binding Path=SelectedDate, StringFormat='dd/MM/yyyy', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                                                                                        </ControlTemplate>
+                                                                                    </Setter.Value>
+                                                                                </Setter>
+                                                                            </DataTrigger>
+
+                                                                            <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Month}">
+                                                                                <Setter Property="Control.Template">
+                                                                                    <Setter.Value>
+                                                                                        <ControlTemplate>
+                                                                                            <TextBox x:Name="PART_TextBox"
+                                                                                                     HorizontalContentAlignment="Center"
+                                                                                                     Text="{Binding Path=SelectedDate, StringFormat='MM/yyyy', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                                                                                        </ControlTemplate>
+                                                                                    </Setter.Value>
+                                                                                </Setter>
+                                                                            </DataTrigger>
+
+                                                                            <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Year}">
+                                                                                <Setter Property="Control.Template">
+                                                                                    <Setter.Value>
+                                                                                        <ControlTemplate>
+                                                                                            <TextBox x:Name="PART_TextBox"
+                                                                                                     HorizontalContentAlignment="Center"
+                                                                                                     Text="{Binding Path=SelectedDate, StringFormat='yyyy', RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                                                                                        </ControlTemplate>
+                                                                                    </Setter.Value>
+                                                                                </Setter>
+                                                                            </DataTrigger>
+
+
+
+                                                                        </Style.Triggers>
+                                                                    </Style>
+
+                                                                </StackPanel.Resources>
+
+                                                                <TextBlock HorizontalAlignment="Center"
+                                                                           Style="{StaticResource BaseTextBlock}"
+                                                                           Text="{Binding Range, Converter={converters:EnumDecriptionConverter}}" />
+
+
+                                                                <DatePicker Background="Transparent"
+                                                                            BorderThickness="0"
+                                                                            CalendarOpened="DatePicker_CalendarOpened"
+                                                                            IsDropDownOpen="{Binding IsOpen, Mode=TwoWay}"
+                                                                            SelectedDate="{Binding Date}">
+                                                                    <DatePicker.CalendarStyle>
+                                                                        <Style TargetType="Calendar">
+                                                                            <Setter Property="DisplayMode" Value="Month" />
+
+                                                                            <Setter Property="BorderThickness" Value="0" />
+                                                                        </Style>
+                                                                    </DatePicker.CalendarStyle>
+
+                                                                    <DatePicker.Style>
+                                                                        <Style TargetType="DatePicker">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Total}">
+                                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </DatePicker.Style>
+                                                                </DatePicker>
+
+                                                            </StackPanel>
+
+                                                        </Border>
+
+                                                        <StackPanel Grid.Row="1"
+                                                                    Margin="10,5,10,5"
+                                                                    HorizontalAlignment="Center">
+                                                            <TextBlock HorizontalAlignment="Center"
+                                                                       Style="{StaticResource BaseTextBlock}"
+                                                                       Text="{Binding TotalTime}" />
+                                                            <TextBlock HorizontalAlignment="Center"
+                                                                       Style="{StaticResource BaseTextBlock}"
+                                                                       Text="{Binding TotalKmValue, StringFormat={}{0} km}" />
+                                                        </StackPanel>
+                                                    </Grid>
+
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="BorderThickness" Value="0,0,1,0" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Range}" Value="{x:Static statistics:StatisticsRange.Total}">
+                                                                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Border>
+                            </Grid>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

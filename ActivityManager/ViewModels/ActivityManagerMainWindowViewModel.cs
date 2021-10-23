@@ -9,6 +9,8 @@ using VCore.WPF.ViewModels.Navigation;
 
 namespace ActivityManager.ViewModels
 {
+  //TODO: Zoradit podla datumu
+  //TODO: Pri prepocitani zachovat datumy
   public class ActivityManagerMainWindowViewModel : BaseMainWindowViewModel
   {
     private readonly IViewModelsFactory viewModelsFactory;

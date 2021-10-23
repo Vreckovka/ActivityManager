@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,6 +12,7 @@ using ActivityManager.Views;
 using ActivityManager.Views.Modals;
 using VCore;
 using VCore.Standard.Factories.ViewModels;
+using VCore.Standard.Helpers;
 using VCore.WPF.Interfaces.Managers;
 using VCore.WPF.ItemsCollections;
 using VCore.WPF.Managers;
@@ -130,6 +132,7 @@ namespace ActivityManager.ViewModels.Activities
 
         newVm.GetDuration();
         SaveAcitvities();
+        OrderActivities();
       }
     }
 
@@ -158,6 +161,7 @@ namespace ActivityManager.ViewModels.Activities
         activitiesProvider.AddActivityToCache(activityViewModel.Model);
 
         SaveAcitvities();
+        OrderActivities();
       }
     }
 
@@ -195,6 +199,7 @@ namespace ActivityManager.ViewModels.Activities
 
         newVm.GetDuration();
         SaveAcitvities();
+        OrderActivities();
       }
     }
 
@@ -219,15 +224,38 @@ namespace ActivityManager.ViewModels.Activities
 
     private async void LoadActivities()
     {
-      var loadedActivities = await activitiesProvider.LoadActivitiesAsync();
+      var loadedActivities = (await activitiesProvider.LoadActivitiesAsync()).ToList();
 
       Application.Current.Dispatcher.Invoke(() =>
       {
-        Activities.AddRange(loadedActivities.Select(x => viewModelsFactory.Create<ActivityViewModel>(x)));
+        var vms = loadedActivities.Select(x => viewModelsFactory.Create<ActivityViewModel>(x)).ToList();
+        vms = GetOrderedActivities(vms).ToList();
+
+        Activities.AddRange(vms);
       });
     }
 
     #endregion
+
+    private IEnumerable<ActivityViewModel> GetOrderedActivities(IEnumerable<ActivityViewModel> activityViewModels)
+    {
+      var list = activityViewModels.ToList();
+      var oredered = list.OrderBy(x => x.Model.Created).ToList();
+
+      for (int i = 0; i < oredered.Count; i++)
+      {
+        oredered[i].Model.Id = i + 1;
+      }
+
+      return list.OrderByDescending(x => x.Model.Created);
+    }
+
+    private void OrderActivities()
+    {
+      var vms = Activities.ViewModels.ToList();
+      Activities.Clear();
+      Activities.AddRange(GetOrderedActivities(vms));
+    }
 
     #region SaveAcitvities
 
@@ -238,10 +266,16 @@ namespace ActivityManager.ViewModels.Activities
 
     #endregion
 
+    #region Filter
+
     private void Filter()
     {
       Activities.Filter((x) => FilterItemsByType(x, FilterByType));
     }
+
+    #endregion
+
+    #region FilterItemsByType
 
     private bool FilterItemsByType(ActivityViewModel activitiesViewModel, FilterActivityType filterActivityType)
     {
@@ -257,6 +291,10 @@ namespace ActivityManager.ViewModels.Activities
       }
     }
 
+    #endregion
+
+    #region GetFilterActivityType
+
     private FilterActivityType? GetFilterActivityType(ActivityType activityType)
     {
       switch (activityType)
@@ -271,6 +309,8 @@ namespace ActivityManager.ViewModels.Activities
 
       return null;
     }
+
+    #endregion
 
     #endregion
   }

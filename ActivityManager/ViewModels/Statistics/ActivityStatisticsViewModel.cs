@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using ActivityManager.Domain;
+using LiveCharts;
+using LiveCharts.Wpf;
 using VCore.Standard;
 using VCore.Standard.Helpers;
 
@@ -9,11 +14,11 @@ namespace ActivityManager.ViewModels.Statistics
 {
   public class ActivityStatisticsViewModel : ViewModel
   {
+    #region Properties
+
     public ActivityType? ActivityType { get; set; }
     public StatisticsRange Range { get; set; }
-
     public IEnumerable<Activity> Activities { get; set; }
-
 
 
     #region IsOpen
@@ -34,9 +39,6 @@ namespace ActivityManager.ViewModels.Statistics
     }
 
     #endregion
-
-
-
 
     #region TotalKmValue
 
@@ -96,12 +98,76 @@ namespace ActivityManager.ViewModels.Statistics
 
     #endregion
 
+    #region ChartValues
 
+    private IChartValues chartValues;
 
-    private void OnDateChanged(DateTime dateTime)
+    public IChartValues ChartValues
     {
-      CalculateStats(dateTime);
+      get { return chartValues; }
+      set
+      {
+        if (value != chartValues)
+        {
+          chartValues = value;
+          RaisePropertyChanged();
+        }
+      }
     }
+
+    #endregion
+
+    #region Labels
+
+    private string[] labels;
+
+    public string[] Labels
+    {
+      get { return labels; }
+      set
+      {
+        if (value != labels)
+        {
+          labels = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
+    #region YFormatter
+
+    private Func<double, string> yFormatter;
+
+    public Func<double, string> YFormatter
+    {
+      get { return yFormatter; }
+      set
+      {
+        if (value != yFormatter)
+        {
+          yFormatter = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Methods
+
+    #region OnDateChanged
+
+
+    private async void OnDateChanged(DateTime dateTime)
+    {
+      await CalculateStats(dateTime);
+    }
+
+    #endregion
 
     #region GetStatisticsRangePredicated
 
@@ -143,24 +209,48 @@ namespace ActivityManager.ViewModels.Statistics
 
     #region CalculateStats
 
-    public void CalculateStats(DateTime dateTime)
+    public async Task CalculateStats(DateTime? dateTime = null)
     {
+      if (dateTime == null)
+      {
+        dateTime = Date;
+      }
+
       if (Activities != null)
       {
-        var ranged = Activities.Where(x => GetStatisticsRangePredicated(x, dateTime, Range)).ToList();
+        var ranged = Activities.Where(x => GetStatisticsRangePredicated(x, dateTime.Value, Range)).ToList();
 
-        TotalKmValue = ranged.Sum(x => x.DistanceInKm);
-        TotalTime = TimeSpan.FromTicks(ranged.Sum(x => x.DurationTicks));
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+          TotalKmValue = ranged.Sum(x => x.DistanceInKm);
+          TotalTime = TimeSpan.FromTicks(ranged.Sum(x => x.DurationTicks));
+
+          if (Range == StatisticsRange.Total)
+          {
+            var kms = new List<double>();
+            var dates = new List<string>();
+
+            double total = 0;
+
+            foreach (var item in ranged)
+            {
+              total += item.DistanceInKm;
+
+              dates.Add(item.Created.Value.ToShortDateString());
+              kms.Add(total);
+            }
+
+            ChartValues = new ChartValues<double>(kms);
+            Labels = dates.ToArray();
+            YFormatter = value => value.ToString("N1");
+          }
+        });
       }
     }
 
     #endregion
-  }
 
-  public class ActivityStatisticsGroupViewModel : ViewModel
-  {
-    public ActivityType? ActivityType { get; set; }
+    #endregion
 
-    public IEnumerable<ActivityStatisticsViewModel> ActivityStatistics { get; set; }
   }
 }
