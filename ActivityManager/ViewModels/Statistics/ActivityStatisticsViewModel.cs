@@ -197,7 +197,7 @@ namespace ActivityManager.ViewModels.Statistics
             return activity.Created != null;
         }
 
-        return activity.Created.Value.Date >= startDate.Date && endDate.Date > activity.Created.Value.Date;
+        return activity.Created.Value.Date >= startDate.Date && endDate.Date >= activity.Created.Value.Date;
       }
 
 
