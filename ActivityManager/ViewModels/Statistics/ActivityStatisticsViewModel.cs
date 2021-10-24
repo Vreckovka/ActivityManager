@@ -161,7 +161,6 @@ namespace ActivityManager.ViewModels.Statistics
 
     #region OnDateChanged
 
-
     private async void OnDateChanged(DateTime dateTime)
     {
       await CalculateStats(dateTime);

@@ -52,7 +52,7 @@
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
 
-                                    <Grid Margin="10,0,15,0">
+                                    <Grid Margin="10,0,15,0" >
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="auto" />
                                             <RowDefinition Height="auto" />
@@ -61,7 +61,7 @@
 
                                         <Grid.Resources>
                                             <Style x:Key="TotalStats" TargetType="Border">
-                                                <Setter Property="Width" Value="150" />
+                                                <Setter Property="Width" Value="210" />
                                                 <Setter Property="Padding" Value="10,5" />
                                                 <Setter Property="Background" Value="#05ffffff" />
                                                 <Setter Property="BorderBrush" Value="#25ffffff" />
@@ -130,7 +130,7 @@
                                                            Text="Celkovo Km" />
                                                 <TextBlock HorizontalAlignment="Center"
                                                            FontSize="30"
-                                                           Text="{Binding Total.TotalKmValue, StringFormat={}{0} Km}" />
+                                                           Text="{Binding Total.TotalKmValue, StringFormat={}{0:N2} Km}" />
                                             </StackPanel>
                                         </Border>
 

@@ -8,7 +8,7 @@ namespace ActivityManager.Domain
     Run,
     [Description("Bicykel")]
     Bicycle,
-    [Description("Chôdza")]
+    [Description("Turistika")]
     Walk
   }
 }

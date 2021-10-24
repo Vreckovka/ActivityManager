@@ -10,7 +10,7 @@ namespace ActivityManager.ViewModels.Activities
     Run,
     [Description("Bicykel")]
     Bicycle,
-    [Description("Chôdza")]
+    [Description("Turisitka")]
     Walk
   }
 }

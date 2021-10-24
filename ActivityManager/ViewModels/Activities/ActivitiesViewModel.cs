@@ -131,8 +131,9 @@ namespace ActivityManager.ViewModels.Activities
         activitiesProvider.AddActivityToCache(model);
 
         newVm.GetDuration();
-        SaveAcitvities();
         OrderActivities();
+
+        SaveAcitvities();
       }
     }
 
@@ -158,10 +159,10 @@ namespace ActivityManager.ViewModels.Activities
       {
         Activities.Remove(activityViewModel);
 
-        activitiesProvider.AddActivityToCache(activityViewModel.Model);
+        activitiesProvider.RemoveActivityFromCache(activityViewModel.Model);
 
-        SaveAcitvities();
         OrderActivities();
+        SaveAcitvities();
       }
     }
 
@@ -198,8 +199,10 @@ namespace ActivityManager.ViewModels.Activities
         Activities.Insert(index, newVm);
 
         newVm.GetDuration();
-        SaveAcitvities();
         OrderActivities();
+
+        SaveAcitvities();
+       
       }
     }
 
@@ -247,7 +250,7 @@ namespace ActivityManager.ViewModels.Activities
         oredered[i].Model.Id = i + 1;
       }
 
-      return list.OrderByDescending(x => x.Model.Created);
+      return list.OrderByDescending(x => x.Model.Id);
     }
 
     private void OrderActivities()
