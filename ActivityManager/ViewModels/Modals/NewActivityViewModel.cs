@@ -133,6 +133,12 @@ namespace ActivityManager.ViewModels.Modals
 
         var seconds = Math.Round((minutes - onlyMinutes) * 60);
 
+        if (seconds == 60)
+        {
+          seconds = 0;
+          onlyMinutes++;
+        }
+
         DurationHours = onlyHours;
         DurationMinutes = onlyMinutes;
         DurationSeconds = seconds;
