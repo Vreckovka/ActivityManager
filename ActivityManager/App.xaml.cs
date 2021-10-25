@@ -9,6 +9,7 @@ using ActivityManager.Modularity.Ninject;
 using ActivityManager.ViewModels;
 using ActivityManager.Views;
 using Ninject;
+using PCloudClient;
 using VCore.WPF;
 using VCore.WPF.Views.SplashScreen;
 
@@ -26,6 +27,11 @@ namespace ActivityManager
       base.LoadModules();
 
       Kernel.Load<ActivityManagerNinjectModule>();
+
+      Kernel.Bind<IPCloudService>().To<PCloudService>()
+        .InSingletonScope()
+        .WithConstructorArgument(ConfigurationManager.AppSettings["PCloudPath"])
+        .OnActivation(x => x.Initilize());
     }
   }
 

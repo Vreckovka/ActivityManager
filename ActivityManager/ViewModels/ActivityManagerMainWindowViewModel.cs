@@ -3,23 +3,28 @@ using System.Collections.Generic;
 using System.Text;
 using ActivityManager.ViewModels.Activities;
 using ActivityManager.ViewModels.Statistics;
+using PCloudClient;
 using VCore.Standard.Factories.ViewModels;
 using VCore.WPF.ViewModels;
 using VCore.WPF.ViewModels.Navigation;
 
 namespace ActivityManager.ViewModels
 {
-  //TODO: Zoradit podla datumu
-  //TODO: Pri prepocitani zachovat datumy
+
   public class ActivityManagerMainWindowViewModel : BaseMainWindowViewModel
   {
     private readonly IViewModelsFactory viewModelsFactory;
+    private readonly IPCloudService pCloudService;
+    private int folderId = 1536489835;
+    private string uploadLink = "Vl8Z9gIEUpYTxg5wGuDIpPJWDHYp2jF7";
 
-    public ActivityManagerMainWindowViewModel(IViewModelsFactory viewModelsFactory)
+    public ActivityManagerMainWindowViewModel(IViewModelsFactory viewModelsFactory, IPCloudService pCloudService)
     {
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
-      Title = "Manažer aktivít";
+      this.pCloudService = pCloudService ?? throw new ArgumentNullException(nameof(pCloudService));
     }
+
+    public override string Title => "Manažer aktivít";
 
     public NavigationViewModel NavigationViewModel { get; set; } = new NavigationViewModel();
 
@@ -40,6 +45,10 @@ namespace ActivityManager.ViewModels
       NavigationViewModel.Items.Add(statisticsNav);
 
       activities.IsActive = true;
+
+      //pCloudService.SaveLoginInfo("pecho4@gmail.com", "roman564123a");
+      //pCloudService.CreateUploadLink(folderId, "ActivityManager");
+      //pCloudService.Uploadtolink(uploadLink, "test.txt", Encoding.ASCII.GetBytes("skuska text"));
     }
   }
 }
