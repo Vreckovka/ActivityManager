@@ -41,8 +41,8 @@ namespace ActivityManager.Providers
     {
       return Task.Run(() =>
       {
-        var json = JsonSerializer.Serialize(CachedActivities);
-
+        var json = GetJsonActivities();
+        
         path.EnsureDirectoryExists();
 
         File.WriteAllText(path, json);
@@ -50,6 +50,11 @@ namespace ActivityManager.Providers
     }
 
     #endregion
+
+    public string GetJsonActivities()
+    {
+      return JsonSerializer.Serialize(CachedActivities);
+    }
 
     #region AddActivityToCache
 

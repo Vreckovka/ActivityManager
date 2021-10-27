@@ -15,8 +15,6 @@ namespace ActivityManager.ViewModels
   {
     private readonly IViewModelsFactory viewModelsFactory;
     private readonly IPCloudService pCloudService;
-    private int folderId = 1536489835;
-    private string uploadLink = "Vl8Z9gIEUpYTxg5wGuDIpPJWDHYp2jF7";
 
     public ActivityManagerMainWindowViewModel(IViewModelsFactory viewModelsFactory, IPCloudService pCloudService)
     {
@@ -48,7 +46,8 @@ namespace ActivityManager.ViewModels
 
       //pCloudService.SaveLoginInfo("pecho4@gmail.com", "roman564123a");
       //pCloudService.CreateUploadLink(folderId, "ActivityManager");
-      //pCloudService.Uploadtolink(uploadLink, "test.txt", Encoding.ASCII.GetBytes("skuska text"));
+      
+    
     }
   }
 }

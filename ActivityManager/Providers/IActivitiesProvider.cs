@@ -8,6 +8,7 @@ namespace ActivityManager.Providers
   {
     Task<IEnumerable<Activity>> LoadActivitiesAsync();
     Task SaveAcitvitiesAsync();
+    string GetJsonActivities();
     void AddActivityToCache(Activity activity);
     void RemoveActivityFromCache(Activity activity);
   }

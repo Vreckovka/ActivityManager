@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -10,6 +13,8 @@ using ActivityManager.Providers;
 using ActivityManager.ViewModels.Modals;
 using ActivityManager.Views;
 using ActivityManager.Views.Modals;
+using PCloudClient;
+using PCloudClient.JsonResponses;
 using VCore;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Helpers;
@@ -27,17 +32,21 @@ namespace ActivityManager.ViewModels.Activities
     private readonly IWindowManager windowManager;
     private readonly IViewModelsFactory viewModelsFactory;
     private readonly IActivitiesProvider activitiesProvider;
-
+    private readonly IPCloudService pCloudService;
+    private string uploadLink = "Vl8Z9gIEUpYTxg5wGuDIpPJWDHYp2jF7";
+    private string folderLink = "https://e.pcloud.link/publink/show?code=kZnqA5ZLfF1hV6bgtH7K2ooiqhb0JuJwfaX";
 
     public ActivitiesViewModel(
       IRegionProvider regionProvider,
       IWindowManager windowManager,
       IViewModelsFactory viewModelsFactory,
-      IActivitiesProvider activitiesProvider) : base(regionProvider)
+      IActivitiesProvider activitiesProvider,
+      IPCloudService pCloudService) : base(regionProvider)
     {
       this.windowManager = windowManager ?? throw new ArgumentNullException(nameof(windowManager));
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
       this.activitiesProvider = activitiesProvider ?? throw new ArgumentNullException(nameof(activitiesProvider));
+      this.pCloudService = pCloudService ?? throw new ArgumentNullException(nameof(pCloudService));
     }
 
     #region Properties
@@ -90,6 +99,28 @@ namespace ActivityManager.ViewModels.Activities
 
     #endregion
 
+    #region LastBackupDate
+
+    private DateTime? lastBackupDate;
+
+    public DateTime? LastBackupDate
+    {
+      get
+      {
+        return lastBackupDate;
+      }
+      set
+      {
+        if (value != lastBackupDate)
+        {
+          lastBackupDate = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
     #endregion
 
     #region Commands
@@ -134,6 +165,30 @@ namespace ActivityManager.ViewModels.Activities
         OrderActivities();
 
         SaveAcitvities();
+      }
+    }
+
+    #endregion
+
+    #region SaveToCloud
+
+    private ActionCommand saveToCloud;
+
+    public ICommand SaveToCloud
+    {
+      get
+      {
+        return saveToCloud ??= new ActionCommand(OnSaveToCloud);
+      }
+    }
+
+    private async void OnSaveToCloud()
+    {
+      var result = await pCloudService.Uploadtolink(uploadLink, "zaloha.txt", Encoding.ASCII.GetBytes(activitiesProvider.GetJsonActivities()));
+
+      if (result)
+      {
+        CheckCloudBackup();
       }
     }
 
@@ -202,7 +257,7 @@ namespace ActivityManager.ViewModels.Activities
         OrderActivities();
 
         SaveAcitvities();
-       
+
       }
     }
 
@@ -219,6 +274,7 @@ namespace ActivityManager.ViewModels.Activities
       base.Initialize();
 
       Task.Run(LoadActivities);
+      Task.Run(CheckCloudBackup);
     }
 
     #endregion
@@ -240,6 +296,8 @@ namespace ActivityManager.ViewModels.Activities
 
     #endregion
 
+    #region GetOrderedActivities
+
     private IEnumerable<ActivityViewModel> GetOrderedActivities(IEnumerable<ActivityViewModel> activityViewModels)
     {
       var list = activityViewModels.ToList();
@@ -259,6 +317,8 @@ namespace ActivityManager.ViewModels.Activities
       Activities.Clear();
       Activities.AddRange(GetOrderedActivities(vms));
     }
+
+    #endregion
 
     #region SaveAcitvities
 
@@ -314,6 +374,24 @@ namespace ActivityManager.ViewModels.Activities
     }
 
     #endregion
+
+    public async void CheckCloudBackup()
+    {
+      var scrape = await pCloudService.ScrapePublicFolderItems(folderLink);
+
+      if (scrape != null)
+      {
+        var lastItem = scrape.metadata.contents.LastOrDefault();
+
+        if (lastItem != null)
+        {
+          Application.Current.Dispatcher.Invoke(() =>
+          {
+            LastBackupDate = DateTime.Parse(lastItem.created);
+          });
+        }
+      }
+    }
 
     #endregion
   }

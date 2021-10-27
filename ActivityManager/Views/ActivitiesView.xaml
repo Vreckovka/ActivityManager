@@ -77,22 +77,54 @@
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
 
-      <controls:PathButton Width="155"
-                           Margin="5,0"
-                           Padding="10"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           Background="#25757575"
-                           BorderBrush="#25ffffff"
-                           BorderThickness="1"
-                           Command="{Binding AddActivity}"
-                           Content="Pridaj aktivitu"
-                           ForegroundDefaultColor="White"
-                           IconHoverColor="{StaticResource DefaultRedColor}"
-                           Style="{StaticResource plus}" />
+      <StackPanel Margin="5,0">
+        <controls:PathButton Width="155"
+                             Padding="10"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
+                             Background="#25757575"
+                             BorderBrush="#25ffffff"
+                             BorderThickness="1"
+                             Command="{Binding AddActivity}"
+                             Content="Pridaj aktivitu"
+                             ForegroundDefaultColor="White"
+                             IconHoverColor="{StaticResource DefaultRedColor}"
+                             Style="{StaticResource plus}" />
+
+        <controls:PathButton Width="155"
+                             Margin="0,5,0,0"
+                             Padding="10"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
+                             Background="#25757575"
+                             BorderDefaultColor="#25ffffff"
+                             BorderHoverColor="#45ffffff"
+                             BorderThickness="1"
+                             Command="{Binding SaveToCloud}"
+                             Content="Zálohuj"
+                             EnableBorderAnimation="True"
+                             ForegroundDefaultColor="White"
+                             Glyph="{StaticResource cloud-regular_glyph}"
+                             GlyphFontFamily="{StaticResource FontAwesome6Pro_Solid}"
+                             IconDefaultColor="{StaticResource BlueColor}"
+                             IconHoverColor="{StaticResource DefaultRedColor}"
+                             IconMargin="20 0 10 0"
+                             Style="{StaticResource FontAwesomeGlyphStyle}" />
+
+        <TextBlock Margin="0,5,0,0"
+                   HorizontalAlignment="Center"
+                   Foreground="#959595"
+                   >
+          <Run Text="Posledná záloha"/>
+          <LineBreak />
+          <Run  Text="{Binding LastBackupDate, StringFormat={}{0:dd.MM.yyyy hh:mm}}"/>
+        </TextBlock>
+      </StackPanel>
+
 
       <Border Grid.Column="1"
               Margin="10,0,0,0"
+              VerticalAlignment="Top"
               Background="#151515"
               BorderBrush="#353535"
               BorderThickness="1">
