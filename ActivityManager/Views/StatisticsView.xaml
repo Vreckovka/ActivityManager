@@ -341,7 +341,7 @@
                                                                        Text="{Binding TotalTime}" />
                                                             <TextBlock HorizontalAlignment="Center"
                                                                        Style="{StaticResource BaseTextBlock}"
-                                                                       Text="{Binding TotalKmValue, StringFormat={}{0} km}" />
+                                                                       Text="{Binding TotalKmValue, StringFormat={}{0:N2} km}" />
                                                         </StackPanel>
                                                     </Grid>
 
