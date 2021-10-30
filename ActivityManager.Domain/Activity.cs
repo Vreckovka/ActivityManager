@@ -9,6 +9,8 @@ namespace ActivityManager.Domain
 
     public double DistanceInKm { get; set; }
 
+    public double Inclination { get; set; }
+
     public long DurationTicks { get; set; }
   }
 }

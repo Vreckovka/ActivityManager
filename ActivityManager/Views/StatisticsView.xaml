@@ -45,15 +45,16 @@
                                 </Grid.RowDefinitions>
 
                                 <Grid Grid.Row="1"
-                                      Height="260"
+                                      Height="330"
                                       Margin="0,10,0,10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="auto" />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
 
-                                    <Grid Margin="10,0,15,0" >
+                                    <Grid Margin="10,0,15,0">
                                         <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto" />
                                             <RowDefinition Height="auto" />
                                             <RowDefinition Height="auto" />
                                             <RowDefinition Height="auto" />
@@ -69,6 +70,7 @@
                                                 <Setter Property="BorderThickness" Value="1" />
                                             </Style>
                                         </Grid.Resources>
+
                                         <Border Margin="0,0,0,10"
                                                 Padding="5"
                                                 BorderBrush="#ccc"
@@ -148,6 +150,23 @@
                                                 <TextBlock HorizontalAlignment="Center"
                                                            FontSize="30"
                                                            Text="{Binding Total.TotalTime, Converter={converters:DurationConverter}, ConverterParameter=hours}" />
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Grid.Row="3"
+                                                Margin="0,10,0,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource TotalStats}">
+                                            <StackPanel>
+                                                <TextBlock Margin="0,0,0,5"
+                                                           HorizontalAlignment="Center"
+                                                           FontSize="17"
+                                                           Foreground="White"
+                                                           Text="Celkové prevýšenie" />
+                                                <TextBlock HorizontalAlignment="Center"
+                                                           FontSize="30"
+                                                           Text="{Binding Total.TotalInclination, StringFormat={}{0:N2} Km}" />
                                             </StackPanel>
                                         </Border>
                                     </Grid>
@@ -342,6 +361,9 @@
                                                             <TextBlock HorizontalAlignment="Center"
                                                                        Style="{StaticResource BaseTextBlock}"
                                                                        Text="{Binding TotalKmValue, StringFormat={}{0:N2} km}" />
+                                                            <TextBlock HorizontalAlignment="Center"
+                                                                       Style="{StaticResource BaseTextBlock}"
+                                                                       Text="{Binding TotalInclination, StringFormat={}{0:N2} km}" />
                                                         </StackPanel>
                                                     </Grid>
 

@@ -12,242 +12,248 @@
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
-  <UserControl.Resources>
-    <ResourceDictionary>
+    <UserControl.Resources>
+        <ResourceDictionary>
 
-      <Style x:Key="GridViewColumnHeaderGripper" TargetType="{x:Type Thumb}">
-        <Setter Property="Canvas.Right" Value="-9" />
-        <Setter Property="Width" Value="18" />
-        <Setter Property="Height" Value="{Binding ActualHeight, RelativeSource={RelativeSource TemplatedParent}}" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="Template">
-          <Setter.Value>
-            <ControlTemplate TargetType="{x:Type Thumb}">
-              <Border Padding="{TemplateBinding Padding}" Background="Transparent">
-                <Rectangle Width="2"
-                           Margin="0,0,0,0"
-                           HorizontalAlignment="Center"
-                           Fill="{TemplateBinding Background}"
-                           IsHitTestVisible="False" />
-              </Border>
-            </ControlTemplate>
-          </Setter.Value>
-        </Setter>
-      </Style>
-
-      <ControlTemplate x:Key="ListViewItemTemplate" TargetType="{x:Type ListViewItem}">
-        <Border Name="border"
-                Margin="5,0,0,0"
-                Padding="3"
-                Background="#07ffffff"
-                BorderBrush="#252525"
-                BorderThickness="0,1,0,0">
-          <Border.Style>
-            <Style TargetType="Border">
-              <Setter Property="Background" Value="Transparent" />
+            <Style x:Key="GridViewColumnHeaderGripper" TargetType="{x:Type Thumb}">
+                <Setter Property="Canvas.Right" Value="-9" />
+                <Setter Property="Width" Value="18" />
+                <Setter Property="Height" Value="{Binding ActualHeight, RelativeSource={RelativeSource TemplatedParent}}" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Border Padding="{TemplateBinding Padding}" Background="Transparent">
+                                <Rectangle Width="2"
+                                           Margin="0,0,0,0"
+                                           HorizontalAlignment="Center"
+                                           Fill="{TemplateBinding Background}"
+                                           IsHitTestVisible="False" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
-          </Border.Style>
-          <StackPanel>
-            <GridViewRowPresenter Columns="{TemplateBinding GridView.ColumnCollection}" Content="{TemplateBinding Content}" />
-          </StackPanel>
 
-        </Border>
-        <ControlTemplate.Triggers>
-          <Trigger Property="IsSelected" Value="true">
-            <Setter TargetName="border" Property="Background" Value="#13ffffff" />
-          </Trigger>
-          <Trigger Property="IsMouseOver" Value="true">
-            <Setter TargetName="border" Property="Background" Value="#10ffffff" />
-          </Trigger>
-        </ControlTemplate.Triggers>
-      </ControlTemplate>
+            <ControlTemplate x:Key="ListViewItemTemplate" TargetType="{x:Type ListViewItem}">
+                <Border Name="border"
+                        Margin="5,0,0,0"
+                        Padding="3"
+                        Background="#07ffffff"
+                        BorderBrush="#252525"
+                        BorderThickness="0,1,0,0">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                    </Border.Style>
+                    <StackPanel>
+                        <GridViewRowPresenter Columns="{TemplateBinding GridView.ColumnCollection}" Content="{TemplateBinding Content}" />
+                    </StackPanel>
 
-
-    </ResourceDictionary>
-  </UserControl.Resources>
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="auto" />
-      <RowDefinition />
-    </Grid.RowDefinitions>
-
-    <Grid Margin="0,5,0,15">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="auto" />
-        <ColumnDefinition />
-      </Grid.ColumnDefinitions>
-
-      <StackPanel Margin="5,0">
-        <controls:PathButton Width="155"
-                             Padding="10"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center"
-                             Background="#25757575"
-                             BorderBrush="#25ffffff"
-                             BorderThickness="1"
-                             Command="{Binding AddActivity}"
-                             Content="Pridaj aktivitu"
-                             ForegroundDefaultColor="White"
-                             IconHoverColor="{StaticResource DefaultRedColor}"
-                             Style="{StaticResource plus}" />
-
-        <controls:PathButton Width="155"
-                             Margin="0,5,0,0"
-                             Padding="10"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center"
-                             Background="#25757575"
-                             BorderDefaultColor="#25ffffff"
-                             BorderHoverColor="#45ffffff"
-                             BorderThickness="1"
-                             Command="{Binding SaveToCloud}"
-                             Content="Zálohuj"
-                             EnableBorderAnimation="True"
-                             ForegroundDefaultColor="White"
-                             Glyph="{StaticResource cloud-regular_glyph}"
-                             GlyphFontFamily="{StaticResource FontAwesome6Pro_Solid}"
-                             IconDefaultColor="{StaticResource BlueColor}"
-                             IconHoverColor="{StaticResource DefaultRedColor}"
-                             IconMargin="20 0 10 0"
-                             Style="{StaticResource FontAwesomeGlyphStyle}" />
-
-        <TextBlock Margin="0,5,0,0"
-                   HorizontalAlignment="Center"
-                   Foreground="#959595"
-                   >
-          <Run Text="Posledná záloha"/>
-          <LineBreak />
-          <Run  Text="{Binding LastBackupDate, StringFormat={}{0:dd.MM.yyyy hh:mm}}"/>
-        </TextBlock>
-      </StackPanel>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsSelected" Value="true">
+                        <Setter TargetName="border" Property="Background" Value="#13ffffff" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="true">
+                        <Setter TargetName="border" Property="Background" Value="#10ffffff" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
 
 
-      <Border Grid.Column="1"
-              Margin="10,0,0,0"
-              VerticalAlignment="Top"
-              Background="#151515"
-              BorderBrush="#353535"
-              BorderThickness="1">
-        <Grid>
-          <Grid.RowDefinitions>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
-          </Grid.RowDefinitions>
+        </Grid.RowDefinitions>
 
-          <Border Padding="5,5"
-                  Background="#252525"
-                  BorderBrush="#353535"
-                  BorderThickness="0,0,0,1">
-            <TextBlock HorizontalAlignment="Center" Text="Filter" />
-          </Border>
+        <Grid Margin="0,5,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
+            <StackPanel Margin="5,0">
+                <controls:PathButton Width="155"
+                                     Padding="10"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center"
+                                     Background="#25757575"
+                                     BorderBrush="#25ffffff"
+                                     BorderThickness="1"
+                                     Command="{Binding AddActivity}"
+                                     Content="Pridaj aktivitu"
+                                     ForegroundDefaultColor="White"
+                                     IconHoverColor="{StaticResource DefaultRedColor}"
+                                     Style="{StaticResource plus}" />
 
-          <StackPanel Grid.Row="1"
-                      Margin="5"
-                      Orientation="Horizontal">
-            <StackPanel Orientation="Horizontal">
-              <TextBlock Margin="0,0,10,0"
-                         VerticalAlignment="Center"
-                         Text="Typ aktivity" />
+                <controls:PathButton Width="155"
+                                     Margin="0,5,0,0"
+                                     Padding="10"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center"
+                                     Background="#25757575"
+                                     BorderDefaultColor="#25ffffff"
+                                     BorderHoverColor="#45ffffff"
+                                     BorderThickness="1"
+                                     Command="{Binding SaveToCloud}"
+                                     Content="Zálohuj"
+                                     EnableBorderAnimation="True"
+                                     ForegroundDefaultColor="White"
+                                     Glyph="{StaticResource cloud-regular_glyph}"
+                                     GlyphFontFamily="{StaticResource FontAwesome6Pro_Solid}"
+                                     IconDefaultColor="{StaticResource BlueColor}"
+                                     IconHoverColor="{StaticResource DefaultRedColor}"
+                                     IconMargin="20 0 10 0"
+                                     Style="{StaticResource FontAwesomeGlyphStyle}" />
 
-              <ComboBox VerticalAlignment="Top"
-                        DisplayMemberPath="Description"
-                        FontSize="15"
-                        ItemsSource="{Binding FilterByType, Converter={converters:EnumToCollectionConverter}, Mode=OneTime}"
-                        SelectedValue="{Binding FilterByType}"
-                        SelectedValuePath="Value" />
+                <TextBlock Margin="0,5,0,0"
+                           HorizontalAlignment="Center"
+                           Foreground="#959595">
+                    <Run Text="Posledná záloha" />
+                    <LineBreak />
+                    <Run Text="{Binding LastBackupDate, StringFormat={}{0:dd.MM.yyyy hh:mm}}" />
+                </TextBlock>
             </StackPanel>
 
-          </StackPanel>
+
+            <Border Grid.Column="1"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Top"
+                    Background="#151515"
+                    BorderBrush="#353535"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Border Padding="5,5"
+                            Background="#252525"
+                            BorderBrush="#353535"
+                            BorderThickness="0,0,0,1">
+                        <TextBlock HorizontalAlignment="Center" Text="Filter" />
+                    </Border>
+
+
+                    <StackPanel Grid.Row="1"
+                                Margin="5"
+                                Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="0,0,10,0"
+                                       VerticalAlignment="Center"
+                                       Text="Typ aktivity" />
+
+                            <ComboBox VerticalAlignment="Top"
+                                      DisplayMemberPath="Description"
+                                      FontSize="15"
+                                      ItemsSource="{Binding FilterByType, Converter={converters:EnumToCollectionConverter}, Mode=OneTime}"
+                                      SelectedValue="{Binding FilterByType}"
+                                      SelectedValuePath="Value" />
+                        </StackPanel>
+
+                    </StackPanel>
+                </Grid>
+            </Border>
+
         </Grid>
-      </Border>
 
+        <Border Grid.Row="1">
+            <Grid>
+                <ListView Foreground="White" ItemsSource="{Binding Activities.View}">
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns>
+                                <GridViewColumn Width="60" Header="Akcie">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <controls:PathButton Command="{Binding DataContext.DeleteActivity, RelativeSource={RelativeSource AncestorType=ListView, Mode=FindAncestor}}"
+                                                                     CommandParameter="{Binding}"
+                                                                     IconHoverColor="{StaticResource DefaultRedColor}"
+                                                                     Style="{StaticResource xmark}"
+                                                                     ToolTip="Vymazať" />
+
+                                                <controls:PathButton Margin="0,0,10,0"
+                                                                     Command="{Binding DataContext.EditActivity, RelativeSource={RelativeSource AncestorType=ListView, Mode=FindAncestor}}"
+                                                                     CommandParameter="{Binding}"
+                                                                     Style="{StaticResource pencil-glyph}"
+                                                                     ToolTip="Upraviť" />
+
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Width="110" Header="Poradové číslo">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Model.Id}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Width="120" Header="Dátum vytvorenia">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Model.Created, StringFormat={}{0:dd.MM.yyyy}}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="120" Header="Typ aktivity">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Model.Type, Converter={converters:EnumDecriptionConverter}}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Model.Type}" Value="{x:Static domain:ActivityType.Run}">
+                                                                <Setter Property="Foreground" Value="#37aaed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Model.Type}" Value="{x:Static domain:ActivityType.Bicycle}">
+                                                                <Setter Property="Foreground" Value="#37ed43" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Model.Type}" Value="{x:Static domain:ActivityType.Walk}">
+                                                                <Setter Property="Foreground" Value="#edde37" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="120" Header="Dĺžka trvania">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Duration, Converter={converters:DurationConverter}, ConverterParameter=hours}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="120" Header="Vzdialenosť (km)">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Model.DistanceInKm}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="120" Header="Prevýšenie">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Model.Inclination}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+        </Border>
     </Grid>
-
-    <Border Grid.Row="1">
-      <Grid>
-        <ListView Foreground="White" ItemsSource="{Binding Activities.View}">
-          <ListView.View>
-            <GridView>
-              <GridView.Columns>
-                <GridViewColumn Width="60" Header="Akcie">
-                  <GridViewColumn.CellTemplate>
-                    <DataTemplate>
-                      <StackPanel Orientation="Horizontal">
-                        <controls:PathButton Command="{Binding DataContext.DeleteActivity, RelativeSource={RelativeSource AncestorType=ListView, Mode=FindAncestor}}"
-                                             CommandParameter="{Binding}"
-                                             IconHoverColor="{StaticResource DefaultRedColor}"
-                                             Style="{StaticResource xmark}"
-                                             ToolTip="Vymazať" />
-
-                        <controls:PathButton Margin="0,0,10,0"
-                                             Command="{Binding DataContext.EditActivity, RelativeSource={RelativeSource AncestorType=ListView, Mode=FindAncestor}}"
-                                             CommandParameter="{Binding}"
-                                             Style="{StaticResource pencil-glyph}"
-                                             ToolTip="Upraviť" />
-
-                      </StackPanel>
-                    </DataTemplate>
-                  </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-
-                <GridViewColumn Width="110" Header="Poradové číslo">
-                  <GridViewColumn.CellTemplate>
-                    <DataTemplate>
-                      <TextBlock Text="{Binding Model.Id}" />
-                    </DataTemplate>
-                  </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-
-                <GridViewColumn Width="120" Header="Dátum vytvorenia">
-                  <GridViewColumn.CellTemplate>
-                    <DataTemplate>
-                      <TextBlock Text="{Binding Model.Created, StringFormat={}{0:dd.MM.yyyy}}" />
-                    </DataTemplate>
-                  </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-                <GridViewColumn Width="120" Header="Typ aktivity">
-                  <GridViewColumn.CellTemplate>
-                    <DataTemplate>
-                      <TextBlock Text="{Binding Model.Type, Converter={converters:EnumDecriptionConverter}}">
-                        <TextBlock.Style>
-                          <Style TargetType="TextBlock">
-                            <Style.Triggers>
-                              <DataTrigger Binding="{Binding Model.Type}" Value="{x:Static domain:ActivityType.Run}">
-                                <Setter Property="Foreground" Value="#37aaed" />
-                              </DataTrigger>
-                              <DataTrigger Binding="{Binding Model.Type}" Value="{x:Static domain:ActivityType.Bicycle}">
-                                <Setter Property="Foreground" Value="#37ed43" />
-                              </DataTrigger>
-                              <DataTrigger Binding="{Binding Model.Type}" Value="{x:Static domain:ActivityType.Walk}">
-                                <Setter Property="Foreground" Value="#edde37" />
-                              </DataTrigger>
-                            </Style.Triggers>
-                          </Style>
-                        </TextBlock.Style>
-                      </TextBlock>
-                    </DataTemplate>
-                  </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-                <GridViewColumn Width="120" Header="Dĺžka trvania">
-                  <GridViewColumn.CellTemplate>
-                    <DataTemplate>
-                      <TextBlock Text="{Binding Duration, Converter={converters:DurationConverter}, ConverterParameter=hours}" />
-                    </DataTemplate>
-                  </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-                <GridViewColumn Width="120" Header="Vzdialenosť (km)">
-                  <GridViewColumn.CellTemplate>
-                    <DataTemplate>
-                      <TextBlock Text="{Binding Model.DistanceInKm}" />
-                    </DataTemplate>
-                  </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-              </GridView.Columns>
-            </GridView>
-          </ListView.View>
-        </ListView>
-      </Grid>
-    </Border>
-  </Grid>
 </UserControl>

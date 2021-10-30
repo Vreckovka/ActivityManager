@@ -65,7 +65,15 @@
                  Text="{Binding DistanceInKm, Converter={converters:StringToDoubleConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
       </StackPanel>
 
-      <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Style="{StaticResource Header}" Text="Prevýšenie (m)" />
+
+            <TextBox Width="auto"
+                     VerticalAlignment="Center"
+                     Text="{Binding Inclination, Converter={converters:StringToDoubleConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+        </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
         <TextBlock Style="{StaticResource Header}" Text="Čas trvania" />
 
         <StackPanel DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}">

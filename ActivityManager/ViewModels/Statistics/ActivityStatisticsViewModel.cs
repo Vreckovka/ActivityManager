@@ -155,6 +155,25 @@ namespace ActivityManager.ViewModels.Statistics
 
     #endregion
 
+    #region TotalInclination
+
+    private double totalInclination;
+
+    public double TotalInclination
+    {
+      get { return totalInclination; }
+      set
+      {
+        if (value != totalInclination)
+        {
+          totalInclination = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
     #endregion
 
     #region Methods
@@ -223,6 +242,7 @@ namespace ActivityManager.ViewModels.Statistics
         {
           TotalKmValue = ranged.Sum(x => x.DistanceInKm);
           TotalTime = TimeSpan.FromTicks(ranged.Sum(x => x.DurationTicks));
+          TotalInclination = ranged.Sum(x => x.Inclination);
 
           if (Range == StatisticsRange.Total)
           {
