@@ -176,11 +176,52 @@
                                                         Background="Transparent"
                                                         DataContext="{Binding Total}"
                                                         LegendLocation="None">
+
+                                        <wpf:CartesianChart.AxisY>
+                                            <wpf:Axis Title="Počet Km"
+                                                      LabelFormatter="{Binding YFormatter}"
+                                                      MinValue="0">
+                                                <wpf:Axis.Separator>
+                                                    <wpf:Separator Step="100"
+                                                                   Stroke="#25ffffff"
+                                                                   StrokeDashArray="5"
+                                                                   StrokeThickness="1" />
+                                                </wpf:Axis.Separator>
+                                            </wpf:Axis>
+
+                                            <wpf:Axis Title="Prevýšenie"
+                                                      Foreground="#86bfac"
+                                                      LabelFormatter="{Binding YFormatter}"
+                                                      Position="RightTop">
+                                                <wpf:Axis.Separator>
+                                                    <wpf:Separator Step="100"
+                                                                   Stroke="#86bfac"
+                                                                   StrokeDashArray="5"
+                                                                   StrokeThickness="1" />
+                                                </wpf:Axis.Separator>
+                                            </wpf:Axis>
+
+                                        </wpf:CartesianChart.AxisY>
+                                        <wpf:CartesianChart.AxisX>
+                                            <wpf:Axis Title="Čas" Labels="{Binding Labels}">
+                                                <wpf:Axis.Separator>
+                                                    <wpf:Separator Stroke="#25ffffff" StrokeThickness="1" />
+                                                </wpf:Axis.Separator>
+
+                                            </wpf:Axis>
+                                        </wpf:CartesianChart.AxisX>
+                                        <wpf:CartesianChart.DataTooltip>
+                                            <wpf:DefaultTooltip Background="#252525"
+                                                                BorderBrush="#35ffffff"
+                                                                BorderThickness="1" />
+                                        </wpf:CartesianChart.DataTooltip>
+
                                         <wpf:CartesianChart.Series>
                                             <wpf:LineSeries Title="Počet Km"
                                                             Fill="#15cccccc"
                                                             LineSmoothness="1"
-                                                            Values="{Binding ChartValues}">
+                                                            ScalesYAt="0"
+                                                            Values="{Binding TotalKmChartValues}">
                                                 <wpf:LineSeries.Style>
                                                     <Style TargetType="wpf:LineSeries">
                                                         <Style.Triggers>
@@ -205,33 +246,16 @@
                                                     </Style>
                                                 </wpf:LineSeries.Style>
                                             </wpf:LineSeries>
+
+                                            <wpf:LineSeries Title="Prevýšenie"
+                                                            Fill="Transparent"
+                                                            LineSmoothness="1"
+                                                            PointForeground="#516961"
+                                                            ScalesYAt="1"
+                                                            Stroke="#516961"
+                                                            Values="{Binding InclinationChartValues}" />
+
                                         </wpf:CartesianChart.Series>
-                                        <wpf:CartesianChart.AxisY>
-                                            <wpf:Axis Title="Počet Km"
-                                                      LabelFormatter="{Binding YFormatter}"
-                                                      MinValue="0">
-                                                <wpf:Axis.Separator>
-                                                    <wpf:Separator Step="100"
-                                                                   Stroke="#25ffffff"
-                                                                   StrokeDashArray="5"
-                                                                   StrokeThickness="1" />
-                                                </wpf:Axis.Separator>
-
-                                            </wpf:Axis>
-                                        </wpf:CartesianChart.AxisY>
-                                        <wpf:CartesianChart.AxisX>
-                                            <wpf:Axis Title="Čas" Labels="{Binding Labels}">
-                                                <wpf:Axis.Separator>
-                                                    <wpf:Separator Stroke="#25ffffff" StrokeThickness="1" />
-                                                </wpf:Axis.Separator>
-
-                                            </wpf:Axis>
-                                        </wpf:CartesianChart.AxisX>
-                                        <wpf:CartesianChart.DataTooltip>
-                                            <wpf:DefaultTooltip Background="#252525"
-                                                                BorderBrush="#35ffffff"
-                                                                BorderThickness="1" />
-                                        </wpf:CartesianChart.DataTooltip>
                                     </wpf:CartesianChart>
 
                                 </Grid>

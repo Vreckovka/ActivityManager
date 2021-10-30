@@ -98,18 +98,37 @@ namespace ActivityManager.ViewModels.Statistics
 
     #endregion
 
-    #region ChartValues
+    #region TotalKmChartValues
 
-    private IChartValues chartValues;
+    private IChartValues totalKmChartValues;
 
-    public IChartValues ChartValues
+    public IChartValues TotalKmChartValues
     {
-      get { return chartValues; }
+      get { return totalKmChartValues; }
       set
       {
-        if (value != chartValues)
+        if (value != totalKmChartValues)
         {
-          chartValues = value;
+          totalKmChartValues = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
+    #region InclinationChartValues
+
+    private IChartValues inclinationChartValues;
+
+    public IChartValues InclinationChartValues
+    {
+      get { return inclinationChartValues; }
+      set
+      {
+        if (value != inclinationChartValues)
+        {
+          inclinationChartValues = value;
           RaisePropertyChanged();
         }
       }
@@ -247,19 +266,27 @@ namespace ActivityManager.ViewModels.Statistics
           if (Range == StatisticsRange.Total)
           {
             var kms = new List<double>();
+            var inclinations = new List<double>();
+
             var dates = new List<string>();
 
-            double total = 0;
+            double totalKms = 0;
+            double totalInclination = 0;
 
             foreach (var item in ranged)
             {
-              total += item.DistanceInKm;
+              totalKms += item.DistanceInKm;
+              totalInclination += item.Inclination; 
 
               dates.Add(item.Created.Value.ToShortDateString());
-              kms.Add(total);
+
+              kms.Add(totalKms);
+              inclinations.Add(totalInclination);
             }
 
-            ChartValues = new ChartValues<double>(kms);
+            TotalKmChartValues = new ChartValues<double>(kms);
+            InclinationChartValues = new ChartValues<double>(inclinations);
+
             Labels = dates.ToArray();
             YFormatter = value => value.ToString("N1");
           }
