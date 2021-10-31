@@ -166,7 +166,7 @@
                                                            Text="Celkové prevýšenie" />
                                                 <TextBlock HorizontalAlignment="Center"
                                                            FontSize="30"
-                                                           Text="{Binding Total.TotalInclination, StringFormat={}{0:N2} Km}" />
+                                                           Text="{Binding Total.TotalInclination, StringFormat={}{0:N2} m}" />
                                             </StackPanel>
                                         </Border>
                                     </Grid>
@@ -190,13 +190,13 @@
                                             </wpf:Axis>
 
                                             <wpf:Axis Title="Prevýšenie"
-                                                      Foreground="#86bfac"
+                                                      Foreground="#75d1d1"
                                                       LabelFormatter="{Binding YFormatter}"
                                                       Position="RightTop">
                                                 <wpf:Axis.Separator>
                                                     <wpf:Separator Step="100"
-                                                                   Stroke="#86bfac"
-                                                                   StrokeDashArray="5"
+                                                                   Stroke="#75d1d1"
+                                                                   StrokeDashArray="2"
                                                                    StrokeThickness="1" />
                                                 </wpf:Axis.Separator>
                                             </wpf:Axis>
@@ -224,6 +224,7 @@
                                                             Values="{Binding TotalKmChartValues}">
                                                 <wpf:LineSeries.Style>
                                                     <Style TargetType="wpf:LineSeries">
+                                                        <Setter Property="PointGeometrySize" Value="8" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Run}">
                                                                 <Setter Property="Stroke" Value="#37aaed" />
@@ -239,6 +240,7 @@
                                                             </DataTrigger>
 
                                                             <DataTrigger Binding="{Binding ActivityType}" Value="{x:Null}">
+                                                                <Setter Property="PointGeometrySize" Value="7" />
                                                                 <Setter Property="Stroke" Value="{StaticResource DefaultRedBrush}" />
                                                                 <Setter Property="PointForeground" Value="{StaticResource DefaultRedBrush}" />
                                                             </DataTrigger>
@@ -250,9 +252,10 @@
                                             <wpf:LineSeries Title="Prevýšenie"
                                                             Fill="Transparent"
                                                             LineSmoothness="1"
-                                                            PointForeground="#516961"
+                                                            PointForeground="#75d1d1"
+                                                            PointGeometrySize="0"
                                                             ScalesYAt="1"
-                                                            Stroke="#516961"
+                                                            Stroke="#75d1d1"
                                                             Values="{Binding InclinationChartValues}" />
 
                                         </wpf:CartesianChart.Series>
