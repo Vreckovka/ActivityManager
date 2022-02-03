@@ -178,24 +178,22 @@
                                                         LegendLocation="None">
 
                                         <wpf:CartesianChart.AxisY>
-                                            <wpf:Axis Title="Počet Km"
+                                            <wpf:Axis Title="Vzdialenosť (km)"
                                                       LabelFormatter="{Binding YFormatter}"
                                                       MinValue="0">
                                                 <wpf:Axis.Separator>
-                                                    <wpf:Separator Step="100"
-                                                                   Stroke="#25ffffff"
-                                                                   StrokeDashArray="5"
+                                                    <wpf:Separator Stroke="#65ffffff"
+                                                                   StrokeDashArray="2"
                                                                    StrokeThickness="1" />
                                                 </wpf:Axis.Separator>
                                             </wpf:Axis>
 
-                                            <wpf:Axis Title="Prevýšenie"
+                                            <wpf:Axis Title="Prevýšenie (m)"
                                                       Foreground="#75d1d1"
                                                       LabelFormatter="{Binding YFormatter}"
                                                       Position="RightTop">
                                                 <wpf:Axis.Separator>
-                                                    <wpf:Separator Step="100"
-                                                                   Stroke="#75d1d1"
+                                                    <wpf:Separator Stroke="#75d1d1"
                                                                    StrokeDashArray="2"
                                                                    StrokeThickness="1" />
                                                 </wpf:Axis.Separator>
@@ -205,7 +203,7 @@
                                         <wpf:CartesianChart.AxisX>
                                             <wpf:Axis Title="Čas" Labels="{Binding Labels}">
                                                 <wpf:Axis.Separator>
-                                                    <wpf:Separator Stroke="#25ffffff" StrokeThickness="1" />
+                                                    <wpf:Separator Stroke="#252525" StrokeThickness="1" />
                                                 </wpf:Axis.Separator>
 
                                             </wpf:Axis>
@@ -217,14 +215,14 @@
                                         </wpf:CartesianChart.DataTooltip>
 
                                         <wpf:CartesianChart.Series>
-                                            <wpf:LineSeries Title="Počet Km"
+                                            <wpf:LineSeries Title="Vzdialenosť (km)"
                                                             Fill="#15cccccc"
                                                             LineSmoothness="1"
                                                             ScalesYAt="0"
                                                             Values="{Binding TotalKmChartValues}">
                                                 <wpf:LineSeries.Style>
                                                     <Style TargetType="wpf:LineSeries">
-                                                        <Setter Property="PointGeometrySize" Value="8" />
+                                                        <Setter Property="PointGeometrySize" Value="0" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding ActivityType}" Value="{x:Static domain:ActivityType.Run}">
                                                                 <Setter Property="Stroke" Value="#37aaed" />
@@ -240,7 +238,7 @@
                                                             </DataTrigger>
 
                                                             <DataTrigger Binding="{Binding ActivityType}" Value="{x:Null}">
-                                                                <Setter Property="PointGeometrySize" Value="7" />
+                                                                <Setter Property="PointGeometrySize" Value="0" />
                                                                 <Setter Property="Stroke" Value="{StaticResource DefaultRedBrush}" />
                                                                 <Setter Property="PointForeground" Value="{StaticResource DefaultRedBrush}" />
                                                             </DataTrigger>
@@ -249,7 +247,7 @@
                                                 </wpf:LineSeries.Style>
                                             </wpf:LineSeries>
 
-                                            <wpf:LineSeries Title="Prevýšenie"
+                                            <wpf:LineSeries Title="Prevýšenie (m)"
                                                             Fill="Transparent"
                                                             LineSmoothness="1"
                                                             PointForeground="#75d1d1"
@@ -390,7 +388,7 @@
                                                                        Text="{Binding TotalKmValue, StringFormat={}{0:N2} km}" />
                                                             <TextBlock HorizontalAlignment="Center"
                                                                        Style="{StaticResource BaseTextBlock}"
-                                                                       Text="{Binding TotalInclination, StringFormat={}{0:N2} km}" />
+                                                                       Text="{Binding TotalInclination, StringFormat={}{0:N2} m}" />
                                                         </StackPanel>
                                                     </Grid>
 
