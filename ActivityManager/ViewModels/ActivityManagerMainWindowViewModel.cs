@@ -16,7 +16,7 @@ namespace ActivityManager.ViewModels
     private readonly IViewModelsFactory viewModelsFactory;
     private readonly IPCloudService pCloudService;
 
-    public ActivityManagerMainWindowViewModel(IViewModelsFactory viewModelsFactory, IPCloudService pCloudService)
+    public ActivityManagerMainWindowViewModel(IViewModelsFactory viewModelsFactory, IPCloudService pCloudService) : base(viewModelsFactory)
     {
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
       this.pCloudService = pCloudService ?? throw new ArgumentNullException(nameof(pCloudService));
@@ -46,8 +46,8 @@ namespace ActivityManager.ViewModels
 
       //pCloudService.SaveLoginInfo("pecho4@gmail.com", "roman564123a");
       //pCloudService.CreateUploadLink(folderId, "ActivityManager");
-      
-    
+
+
     }
   }
 }

@@ -184,7 +184,7 @@ namespace ActivityManager.ViewModels.Activities
 
     private async void OnSaveToCloud()
     {
-      var result = await pCloudService.Uploadtolink(uploadLink, "zaloha.txt", Encoding.ASCII.GetBytes(activitiesProvider.GetJsonActivities()));
+      var result = await pCloudService.Uploadtolink(uploadLink, "zaloha.txt", Encoding.ASCII.GetBytes(activitiesProvider.GetJsonActivities()),true);
 
       if (result)
       {
